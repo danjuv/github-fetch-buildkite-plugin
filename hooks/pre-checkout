@@ -2,16 +2,20 @@
 
 set -euo pipefail
 
-export_canva_repo() {
+export_canva_origin_url() {
   local origin_url
-  local ssm_param
-  ssm_param="${BUILDKITE_PLUGIN_GITHUB_FETCH_SSM_PARAM:-}"
-  origin_url="$(aws ssm get-parameter --name ${ssm_param} --query \"Parameter.Value\" --output text)"
-  export BUILDKITE_REPO="${origin_url}"
+  if [[ -n "${BUILDKITE_PLUGIN_GITHUB_FETCH_SSM_PARAM:-}" ]]; then
+    origin_url="$(aws ssm get-parameter \
+        --name "${BUILDKITE_PLUGIN_GITHUB_FETCH_SSM_PARAM}"\
+        --query "Parameter.Value"\
+        --output text\
+        | tr /.:@ _)"
+    export BUILDKITE_PLUGIN_GITHUB_FETCH_S3_URL="${BUILDKITE_PLUGIN_GITHUB_FETCH_S3_URL}/${origin_url}"
+  fi
 }
 
 main() {
-  export_buildkite_repo
+  export_canva_origin_url
 }
 
 main "$@"
