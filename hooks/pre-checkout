@@ -27,6 +27,7 @@ export_buildkite_repo() {
 }
 
 main() {
+  env
   if [[ -n "${BUILDKITE_PLUGIN_GITHUB_FETCH_APP_ID:-}" ]] && [[ -n "${BUILDKITE_PLUGIN_GITHUB_FETCH_APP_SECRET:-}" ]]; then
     export_buildkite_repo
   fi
